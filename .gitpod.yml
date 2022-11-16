@@ -1,0 +1,17 @@
+image:
+  file: .gitpod.Dockerfile
+tasks:
+  - name: setup
+    before: |-
+      # get Astra CLI
+      mkdir bin
+      curl -Ls "https://dtsx.io/get-astra-cli" | bash
+
+    command: |-
+      # Open README in VS Code (or default IDE)
+      gp open README.md
+
+ports:
+  - port: 8080
+    onOpen: open-browser
+    visibility: private
