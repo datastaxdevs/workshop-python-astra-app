@@ -68,7 +68,7 @@ creating the database is not powerful enough for us today._
 
 First, open this repo in Gitpod by right-clicking the following button ("open in new tab"):
 
-<a href="https://github.com/datastaxdevs/workshop-python-astra-loader"><img src="images/open_in_gitpod.svg?raw=true" /></a>
+<a href="https://gitpod.io/#https://github.com/datastaxdevs/workshop-python-astra-loader"><img src="images/open_in_gitpod.svg?raw=true" /></a>
 
 In a couple of minutes you will have your Gitpod IDE up and running, with this repo cloned, ready and waiting for you (you may have to authorize the Gitpod single-sign-on to continue).
 
