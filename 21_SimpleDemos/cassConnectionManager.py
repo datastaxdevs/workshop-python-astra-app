@@ -9,18 +9,19 @@ from globalSettings    import *
 ### connection variables for on-prem Cassandra or DSE
 CASS_CONTACT_POINTS    = ["192.168.1.151", "192.168.1.171"] ;
 CASS_PORT              = 9042 ;
-CASS_USERNAME          = "thor" ;
-CASS_PASSWORD          = "Complic4ted" ;
+CASS_USERNAME          = "yourusername" ;
+CASS_PASSWORD          = "yourpassword" ;
 
 ### connection variables for AstraDB
 # AstraDB Portal -> Dashboard -> Serverless Databases -> Connect -> Drivers -> Legacy -> Python -> download Secure Connect Bundle
-ASTRADB_CLOUD_CONFIG   = { 'secure_connect_bundle': '/apps/opt/cassandra/pyAstra/secure-connect-oramad-db.zip' }
+ASTRA_DB_SECURE_BUNDLE_PATH = os.environ["ASTRA_DB_SECURE_BUNDLE_PATH"]
+ASTRADB_CLOUD_CONFIG   = { 'secure_connect_bundle': ASTRA_DB_SECURE_BUNDLE_PATH }
 # AstraDB Portal -> Organization Settings -> Token Management -> Read/Write Service Account -> Generate a New Token -> Download Token Details
-ASTRADB_CLIENT_ID      = "OramaDL0vesPlayStati0n"
-ASTRADB_CLIENT_SECRET  = "OramaDL0vesPlayStati0n_n0itatSyalPsev0LDamarO_OramaDL0vesPlayStati0n_n0itatSyalPsev0LDamarO_OramaDL0vesPlayStati0n_n0itatSyalPsev0LDamarO"
+ASTRADB_CLIENT_ID      = os.environ["ASTRA_DB_CLIENT_ID"]
+ASTRADB_CLIENT_SECRET  = os.environ["ASTRA_DB_CLIENT_SECRET"]
 
 ### common db settings
-CASS_KEYSPACE          = "cassdemo" ;
+CASS_KEYSPACE          = os.environ["ASTRA_DB_KEYSPACE"] ;
 
 
 ### main class
@@ -48,4 +49,3 @@ class cassConnect:
 		self.cass_cluster.shutdown()
 		self.cass_session.shutdown()
 		return (0)
-
