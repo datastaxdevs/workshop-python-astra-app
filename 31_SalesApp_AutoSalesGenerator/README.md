@@ -12,8 +12,6 @@
 
 #### Apache Cassandra CQL Commands
 
-`01_cassandra_sales_keyspace.cql` Apache Cassandra CQL commands to create sales keyspace.
-
 `02_sales_create_tables.cql` Apache Cassandra CQL commands to create tables in sales keyspace.
 
 `03_load_data_in_lookup_tables.cql` Apache Cassandra CQL insert data into lookup tables in sales keyspace.
@@ -37,4 +35,3 @@
 ---
 
 NOTE : PYTHON CODE IS WRITTEN FOR DEMONSTRATION PURPOSES ONLY. IT IS NOT OPTIMIZED, NOR WRITTEN BY A PROFESSIONAL PYTHON PROGRAMMER.
-
