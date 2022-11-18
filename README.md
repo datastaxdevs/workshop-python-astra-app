@@ -119,3 +119,9 @@ Finally, `source` the .env file:
 ```bash
 source .env
 ```
+
+You can verify that your environment variables have been appropriately sourced by executing:
+
+ ```bash
+ env | grep ASTRA
+ ```

@@ -14,6 +14,9 @@ tasks:
       mkdir bin
       curl -Ls "https://dtsx.io/get-astra-cli" | bash
 
+      # get Cassandra driver
+      pip install cassandra-driver==3.25.0
+
     command: |-
       # Open README in VS Code (or default IDE)
       gp open README.md
