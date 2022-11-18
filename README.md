@@ -1,5 +1,5 @@
 ## python cassandra-driver
-![CassPy.jpg](https://github.com/sarma1807/python-cassandra-driver/blob/master/CassPy.jpg) <br><br>
+![CassPy.jpg](images/CassPy.jpg) <br><br>
 
 #### python cassandra-driver is built by DataStax and distributed via : https://pypi.org/project/cassandra-driver/
 
@@ -119,3 +119,9 @@ Finally, `source` the .env file:
 ```bash
 source .env
 ```
+
+You can verify that your environment variables have been appropriately sourced by executing:
+
+ ```bash
+ env | grep ASTRA
+ ```
