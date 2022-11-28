@@ -30,7 +30,7 @@ input_var = TOTAL_PRODUCTS
 try:
 	cc = cassConnect()
 
-	### build a cql statements
+	### build the cql statements
 	cql_prdcat_stmt = cc.cass_session.prepare("SELECT product_category FROM lookup_product_categories WHERE id = ?")
 	cql_prdcat_stmt.consistency_level = CASS_READ_CONSISTENCY
 
@@ -61,6 +61,11 @@ try:
 
 		v_number_of_products = var_product_id
 
+		if (v_number_of_products % 1000 == 0):
+			output_message = str(v_number_of_products) + " products generated."
+			print(output_message)
+
+
 except Exception as e:
 	### something went wrong
 	print("something went wrong.")
@@ -68,11 +73,8 @@ except Exception as e:
 	print(e)
 else:
 	### all went well
-	output_message = str(v_number_of_products) + " products generated."
-	print(output_message)
 	print("Done.")
 
 
 ### close connection to cassandra cluster
 cc.disconnect_from_cassandra()
-
