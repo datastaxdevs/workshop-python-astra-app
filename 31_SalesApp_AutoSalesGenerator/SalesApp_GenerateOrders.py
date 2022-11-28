@@ -30,7 +30,7 @@ try:
 	### build a cql statements
 	cql_user_stmt = cc.cass_session.prepare("SELECT user_id, user_email_id, user_name, user_phone_number, user_platform, user_state_code FROM users WHERE user_id = ?")
 	cql_user_stmt.consistency_level = CASS_READ_CONSISTENCY
-	
+
 	cql_product_stmt = cc.cass_session.prepare("SELECT product_id, product_category, product_code, product_name, product_price, product_qoh FROM products WHERE product_id = ?")
 	cql_product_stmt.consistency_level = CASS_READ_CONSISTENCY
 
@@ -109,6 +109,10 @@ try:
 			cc.cass_session.execute(cql_order_insert, (var_order_date, var_order_date_hour, var_order_timestamp, var_order_code, var_order_discount_percent, var_order_estimated_shipping_date, var_order_grand_total, var_order_number_of_products, var_order_total, var_user_email_id, var_user_id, var_user_name, var_user_phone_number, var_user_platform, var_user_state_code))
 			v_number_of_orders = v_number_of_orders + 1
 
+		if (v_number_of_orders % 50 == 0):
+			output_message = str(var_order_timestamp) + " | " + str(v_number_of_orders) + " orders generated."
+			print(output_message)
+
 	### generate orders using for loop - end
 
 
@@ -119,11 +123,8 @@ except Exception as e:
 	# print(e)
 else:
 	### all went well
-	output_message = str(var_order_timestamp) + " | " + str(v_number_of_orders) + " orders generated."
-	print(output_message)
-	# print("Done.")
+	print("Done.")
 
 
 ### close connection to cassandra cluster
 cc.disconnect_from_cassandra()
-

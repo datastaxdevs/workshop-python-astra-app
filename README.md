@@ -1,12 +1,18 @@
 # workshop-python-astra-loader
 
-## Steps
+## 📋 Table of contents
 
 1. [Introduction](#1-introduction)
+2. [Database Setup](#2-database-setup)
+3. [GitPod - Dev Environment Setup](#3-gitpod-setup)
+4. [Simple Demos](#4-simple-demos)
+5. [Sales Data Generator](#5-sales-data-generator)
+
+## 1. Introduction
 
 In this workshop you will learn about building small Python applications to load and query data, while using DataStax Astra DB as its data storage layer.
 
-2. [Setup](#2-database-setup)
+## 2. Database Setup
 
 For this workshop you will need an Astra DB instance.  You will be able to create one and use it for free.  If you already have an Astra DB instance, you can certainly use that.
 
@@ -42,7 +48,7 @@ for more on token creation.
 Remember, as mentioned already, _the default Token auto-created for you when
 creating the database is not powerful enough for us today._
 
-3. [GitPod - Dev Environment Setup](#3-gitpod-setup)
+## 3. GitPod Setup
 
 First, open this repo in Gitpod by right-clicking the following button (select "open in new tab"):
 
@@ -108,7 +114,7 @@ You can verify that your environment variables have been appropriately sourced b
  env | grep ASTRA
  ```
 
-4. [Simple Demos](#4-simple-demos)
+## 4. Simple Demos
 
 To verify that we've done everything correctly so far, let's run a couple simple scripts.  First, make sure you're in the `21_SimpleDemos` directory:
 
@@ -138,7 +144,7 @@ With the `emp` table created and a few rows of data INSERTed, let's run the `rea
 ```
 ```
 
-5. [Sales Data Generator](#5-sales-data-generator)
+## 5. Sales Data Generator
 
 First of all, let's make sure we're in the right directory:
 
@@ -157,6 +163,8 @@ Once that script completes, we can verify that it created our new tables with th
 ```
 astra db cqlsh workshops -e "desc keyspace sales"
 ```
+
+#### ✅ 5a. Lookup Tables
 
 Next, let's load the lookup tables.  Feel free to look through the [03_load_data_in_lookup_tables.cql](31_SalesApp_AutoSalesGenerator/03_load_data_in_lookup_tables.cql) file:
 
@@ -181,8 +189,6 @@ Connected to cndb at 127.0.0.1:9042.
 [cqlsh 6.8.0 | Cassandra 4.0.0.6816 | CQL spec 3.4.5 | Native protocol v4]
 Use HELP for help.
 token@cqlsh> use sales;
-token@cqlsh:sales> SELECT * FROM lookup_
-lookup_email_servers      lookup_product_categories lookup_usa_states         lookup_user_platforms
 token@cqlsh:sales> SELECT * FROM lookup_usa_states LIMIT 4;
 
  id | state_code | state_name
@@ -193,4 +199,84 @@ token@cqlsh:sales> SELECT * FROM lookup_usa_states LIMIT 4;
  28 |         NC | North Carolina
 
 (4 rows)
+```
+
+#### ✅ 5b. Generate User and Product Data
+
+Next, let's generate data for users and products.  There are two Python scripts which will randomly generate users and products.  Feel free to take a look at them:
+ - [SalesApp_GenerateUsers.py](31_SalesApp_AutoSalesGenerator/SalesApp_GenerateUsers.py)
+ - [SalesApp_GenerateProducts.py](31_SalesApp_AutoSalesGenerator/SalesApp_GenerateProducts.py)
+
+The behaviors of these scripts are controlled by the [globalSettings.py](31_SalesApp_AutoSalesGenerator/globalSettings.py) script, which is used as an import.  We've preset the variables with some good defaults.
+
+Let's start by running the [SalesApp_GenerateUsers.py](31_SalesApp_AutoSalesGenerator/SalesApp_GenerateUsers.py) script:
+```
+% python SalesApp_GenerateUsers.py
+100 users generated.
+200 users generated.
+300 users generated.
+400 users generated.
+500 users generated.
+600 users generated.
+700 users generated.
+800 users generated.
+900 users generated.
+1000 users generated.
+Done.
+```
+
+Next, we will run the [SalesApp_GenerateProducts.py](31_SalesApp_AutoSalesGenerator/SalesApp_GenerateProducts.py) script:
+```
+% python SalesApp_GenerateProducts.py
+1000 products generated.
+2000 products generated.
+3000 products generated.
+4000 products generated.
+5000 products generated.
+Done.
+```
+
+You can sample the generated data using cqlsh:
+```
+token@cqlsh:sales> SELECT * FROm users LIMIT 10;
+
+ user_id | user_email_id             | user_name    | user_phone_number | user_platform  | user_state_code
+---------+---------------------------+--------------+-------------------+----------------+-----------------
+     990 |   e7dd093a18f4@icloud.com | e7dd093a18f4 |      852-852-7693 |          Linux |              NV
+     655 | c279111c20a4@fastmail.com | c279111c20a4 |      734-491-7328 | Android Tablet |              VA
+     937 |    fc1cbfb4b754@lycos.com | fc1cbfb4b754 |      799-215-5954 |        Mozilla |              WA
+     111 |     2491ff02c8f4@mail.com | 2491ff02c8f4 |      827-375-5187 | Android Tablet |              AL
+     873 |    4f7642b67084@yahoo.com | 4f7642b67084 |      873-894-4802 | Android Tablet |              TN
+     412 | 09614cf4eda4@fastmail.com | 09614cf4eda4 |      793-621-2836 |  Android Phone |              DC
+     332 |    1b8339b37a04@email.net | 1b8339b37a04 |      812-738-3762 |         iPhone |              IL
+     697 |      5ecc01fc8a14@aol.com | 5ecc01fc8a14 |      714-837-8714 |     ChromeBook |              NH
+     383 |      1d645c6d44b4@aol.com | 1d645c6d44b4 |      763-129-7112 |        Mozilla |              NH
+     314 |     8bcdbf085ee4@mail.com | 8bcdbf085ee4 |      774-335-8667 |        Firefox |              GA
+
+(10 rows)
+
+token@cqlsh:sales> SELECT * FROm products LIMIT 10;
+
+ product_id | product_category | product_code | product_description          | product_name     | product_price | product_qoh
+------------+------------------+--------------+------------------------------+------------------+---------------+-------------
+       1535 |     Collectibles | b12f191b14c4 |       2f195 16a906 87 97390d |       bb9c9 ebfc |         23.97 |        2759
+       1929 |            Games | 9b2795b36994 |     fe5a4 d8d57ac c2 e35e684 |    7a55 2a09c591 |         52.50 |         596
+       4292 |  Beauty Products | a90d57817bf4 |        7055b 022bc 49 38899e |    d92e5d56 6a4d |         59.62 |        5161
+       1235 |        Magazines | 5d33216893d4 | 3278a 868c13ee aeaa 85e99616 | 55b64e59 f38dcb8 |         42.37 |        3769
+       1434 |     Garden Tools | 441c62e1a004 |      d9b6c f2e86 4f 41687b56 |       8bb9c 0b7e |         39.39 |        1354
+       2482 |            Music | 6d1deeab3c74 |    8107 cc33f8db fc cbba2b57 |    a1f169a 2df86 |          13.6 |        2773
+       3843 |            Games | 0d2e85f96084 |       cd53 756a9 aced 2aa92c |  200df11c a14cb2 |         38.28 |        3454
+        990 |       Appliances | 1e91c433ab64 |       e60b 6ce4eb5 2d 9ab10f |   e3fab 02bc801d |         49.27 |         647
+       3236 |      Electronics | bf0499ef8cd4 |        6e0f8 029cc cb 436aa8 |   6add32a7 9ef6f |         20.68 |         945
+       1041 |            Games | 2a2de6dc1b14 |      5b99 059346 bd1 e70163d |       5d09 e42d7 |         36.55 |        5523
+
+(10 rows)
+```
+
+#### ✅ 5c. Generate Order Data
+
+With the users and products generated, we can finally generate orders with the [SalesApp_GenerateOrders.py](31_SalesApp_AutoSalesGenerator/SalesApp_GenerateOrders.py) script:
+```
+% python SalesApp_GenerateOrders.py
+
 ```

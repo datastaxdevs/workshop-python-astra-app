@@ -30,7 +30,7 @@ input_var = TOTAL_USERS
 try:
 	cc = cassConnect()
 
-	### build a cql statements
+	### build the cql statements
 	cql_email_stmt    = cc.cass_session.prepare("SELECT email_server FROM lookup_email_servers WHERE id = ?")
 	cql_state_stmt    = cc.cass_session.prepare("SELECT state_code FROM lookup_usa_states WHERE id = ?")
 	cql_platform_stmt = cc.cass_session.prepare("SELECT platform FROM lookup_user_platforms WHERE id = ?")
@@ -80,6 +80,10 @@ try:
 
 		v_number_of_users = var_user_id
 
+		if (var_user_id % 100 == 0):
+			output_message = str(v_number_of_users) + " users generated."
+			print(output_message)
+
 except Exception as e:
 	### something went wrong
 	print("something went wrong.")
@@ -87,11 +91,8 @@ except Exception as e:
 	print(e)
 else:
 	### all went well
-	output_message = str(v_number_of_users) + " users generated."
-	print(output_message)
 	print("Done.")
 
 
 ### close connection to cassandra cluster
 cc.disconnect_from_cassandra()
-
