@@ -131,6 +131,9 @@ python getCassClusterInfo.py
 That should show you some simple properties about your Astra DB cluster:
 
 ```
+% python getCassClusterInfo.py
+Connected to cndb and it is running 4.0.0.6816 version.
+Done.
 ```
 
 Next, let's build a table and load a few rows of data.  If you like, have a look at the [01_cassdemo_emp_cassandraTable.cql](21_SimpleDemos/01_cassdemo_emp_cassandraTable.cql) file.  Once you're done, execute this command to run the CQL commands within:
@@ -139,9 +142,37 @@ Next, let's build a table and load a few rows of data.  If you like, have a look
 astra db cqlsh workshops -f 01_cassdemo_emp_cassandraTable.cql
 ```
 
-With the `emp` table created and a few rows of data INSERTed, let's run the `readWriteCassEmp.py` script.  That should show the following output:
+With the `emp` table created and a few rows of data INSERTed, let's run the `readWriteCassEmp.py` script.
 
 ```
+python readWriteCassEmp.py
+```
+
+That should show the following output:
+
+```
+% python readWriteCassEmp.py
+---- 1 row inserted -----------------------------------
+
+---- select and print only 1 row ----------------------
+-------------------------------------------------------
+first_name | last_name | empid
+-------------------------------------------------------
+Scott | Tiger | 1001
+-------------------------------------------------------
+
+---- select and print 5 rows --------------------------
+-------------------------------------------------------
+first_name | last_name | empid
+-------------------------------------------------------
+0b1cdc3f78 | c3394c9d7b | 7206
+f6b22d5a99 | e721642623 | 6762
+Scott | Tiger | 1001
+7807b62524 | a7390c4762 | 9278
+Queen | John | 1003
+-------------------------------------------------------
+
+Done.
 ```
 
 ## 5. Sales Data Generator

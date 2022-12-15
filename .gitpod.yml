@@ -14,8 +14,11 @@ tasks:
       mkdir bin
       curl -Ls "https://dtsx.io/get-astra-cli" | bash
 
-      # get Cassandra driver
+      # get Cassandra driver, fastapi, dotenv, and uvicorn
       pip install cassandra-driver==3.25.0
+      pip install fastapi==0.78.0
+      pip install python-dotenv==0.20.0
+      pip install uvicorn==0.18.2
 
     command: |-
       # Open README in VS Code (or default IDE)
