@@ -58,7 +58,7 @@ In a couple of minutes you will have your Gitpod IDE up and running, with this r
 
 _Note_: The next steps are to be executed _within the Gitpod IDE._
 
-### Install and configure the Astra CLI
+### 3a. Install and configure the Astra CLI
 
 In a console within Gitpod, provide the "token proper" part of the Token (the string starting with `AstraCS:...`) by running:
 
@@ -80,7 +80,7 @@ astra db list-keyspaces workshops
 astra db get workshops
 ```
 
-### Download the Secure Connect Bundle
+### 3b. Download the Secure Connect Bundle
 
 The driver also need the "Secure Connect Bundle" zipfile to work (it contains proxy and routing information as well as the necessary certificates).
 
@@ -92,7 +92,7 @@ astra db download-scb -f secure-connect-workshops.zip workshops
 
 You can check it has been saved with `ls *.zip`.
 
-### Configure the dot-env file
+### 3c. Configure the dot-env file
 
 Copy the template dot-env and edit it with:
 
@@ -113,6 +113,14 @@ You can verify that your environment variables have been appropriately sourced b
  ```bash
  env | grep ASTRA
  ```
+
+### 3d. Cassandra Python driver
+
+For these examples to work, the Cassandra Python driver will need to be installed.  The GitPod instance has automatically taken care of that, and you can verify it from a terminal with the following command:
+
+```
+pip show cassandra-driver
+```
 
 ## 4. Simple Demos
 
@@ -257,6 +265,19 @@ Once that script completes, we can verify that it created our new tables with th
 astra db cqlsh workshops -e "desc keyspace sales"
 ```
 
+Let's also have a look at the `globalSettings.py` file.
+
+```python
+### https://docs.datastax.com/en/developer/python-driver/3.25/api/cassandra/#cassandra.ConsistencyLevel
+CASS_READ_CONSISTENCY  = ConsistencyLevel.LOCAL_QUORUM
+CASS_WRITE_CONSISTENCY = ConsistencyLevel.LOCAL_QUORUM
+
+### for small system
+TOTAL_USERS    = 1000        # SalesApp_GenerateUsers.py    will generate this number of users
+TOTAL_PRODUCTS = 5000        # SalesApp_GenerateProducts.py will generate this number of products
+GEN_MAX_ORDERS = 120          # minimum 10. SalesApp_GenerateOrders.py will generate less than this number of orders randomly
+GEN_MAX_PRODUCTS_ORDER = 6   # minimum 5. SalesApp_GenerateOrders.py will generate less than this number of products per order randomly
+```
 #### ✅ 5a. Lookup Tables
 
 Next, let's load the lookup tables.  Feel free to look through the [03_load_data_in_lookup_tables.cql](31_SalesApp_AutoSalesGenerator/03_load_data_in_lookup_tables.cql) file:
@@ -371,5 +392,7 @@ token@cqlsh:sales> SELECT * FROm products LIMIT 10;
 With the users and products generated, we can finally generate orders with the [SalesApp_GenerateOrders.py](31_SalesApp_AutoSalesGenerator/SalesApp_GenerateOrders.py) script:
 ```
 % python SalesApp_GenerateOrders.py
-
+2023-01-09 10:57:29.644454 | 50 orders generated.
+93 total orders generated.
+Done.
 ```

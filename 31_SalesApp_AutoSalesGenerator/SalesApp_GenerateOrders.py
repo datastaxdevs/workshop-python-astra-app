@@ -123,6 +123,8 @@ except Exception as e:
 	# print(e)
 else:
 	### all went well
+	output_message = str(v_number_of_orders) + " total orders generated."
+	print(output_message)
 	print("Done.")
 
 
