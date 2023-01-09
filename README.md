@@ -118,6 +118,8 @@ You can verify that your environment variables have been appropriately sourced b
 
 To verify that we've done everything correctly so far, let's run a couple simple scripts.  First, make sure you're in the `21_SimpleDemos` directory:
 
+### 4a. Python scripts
+
 ```
 cd 21_SimpleDemos
 ```
@@ -173,6 +175,66 @@ Queen | John | 1003
 -------------------------------------------------------
 
 Done.
+```
+### 4b. FastAPI
+
+Now let's pull the same data back with restful endpoints.  To begin, we first need to host our service layer with a small webserver.  Uvicorn is a simple webserver for Python, so we'll use that to invoke our simpleDemoApi.py service.
+
+```
+uvicorn simpleDemoApi:app
+```
+
+Once that's up and running, let's run a quick test on it.  Open another terminal and try the `/cluster_info` endpoint with curl.  Or, you can also open a web browser with the following URL: [http://127.0.0.1:8000/cluster_info](http://127.0.0.1:8000/cluster_info)
+
+```
+curl -s -XGET localhost:8000/cluster_info \
+     -H 'Content-Type: application/json'
+```
+
+Whether you use a browser or the command line, the output should be the same:
+
+```
+[{"name":"cndb","version":"4.0.0.6816"}]
+```
+
+Now let's reproduce work similar to what we did with `readWriteCassEmp.py`.  First, let's add a new employee to our `emp` table.  We'll add an employee named "Wayne Gretzky" with the employee number of 99.
+
+```
+curl -s -XPOST localhost:8000/employee/create \
+     -d'{"empid":98,"first_name":"Wayne","last_name":"Gretzky"}' \
+     -H 'Content-Type: application/json'
+```
+
+The employee number of 99 should be the value returned.  Let's make sure by running a `GET` on the `/employee/{id}` endpoint URL: [http://127.0.0.1:8000/employee/99](http://127.0.0.1:8000/employee/99)
+
+```
+curl -s -XGET http://127.0.0.1:8000/employee/99 \
+-H 'Content-Type: application/json'
+```
+
+This should return the output of:
+
+```
+[{"empid":99,"first_name":"Wayne","last_name":"Gretzky"}]
+```
+
+Likewise, we can also pull back the first 5 rows of the table, using the `/employees/{limit}` endpoint URL:
+
+[http://127.0.0.1:8000/employees/5](http://127.0.0.1:8000/employees/5)
+
+```
+curl -s -XGET http://127.0.0.1:8000/employees/5 \
+-H 'Content-Type: application/json'
+```
+
+This should return the output of:
+
+```
+[{"empid":99,"first_name":"Wayne","last_name":"Gretzky"},
+ {"empid":7206,"first_name":"0b1cdc3f78","last_name":"c3394c9d7b"},
+ {"empid":6762,"first_name":"f6b22d5a99","last_name":"e721642623"},
+ {"empid":1001,"first_name":"Scott","last_name":"Tiger"},
+ {"empid":9278,"first_name":"7807b62524","last_name":"a7390c4762"}]
 ```
 
 ## 5. Sales Data Generator
