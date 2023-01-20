@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 ### import cassConnectionManager.py and other required libraries
-
-from cassConnectionManager import cassConnect
+#from cassConnectionManager import cassConnect
+#replacing with Stefano Lottini's dbConnection
+from dbConnection          import get_session
 from cassandra             import ConsistencyLevel
 from cassandra.query       import SimpleStatement
 from datetime              import datetime, date, timedelta
@@ -25,22 +26,22 @@ v_max_order_products = GEN_MAX_PRODUCTS_ORDER
 
 ### main logic
 try:
-	cc = cassConnect()
+	session = get_session()
 
 	### build a cql statements
-	cql_user_stmt = cc.cass_session.prepare("SELECT user_id, user_email_id, user_name, user_phone_number, user_platform, user_state_code FROM users WHERE user_id = ?")
+	cql_user_stmt = session.prepare("SELECT user_id, user_email_id, user_name, user_phone_number, user_platform, user_state_code FROM users WHERE user_id = ?")
 	cql_user_stmt.consistency_level = CASS_READ_CONSISTENCY
 
-	cql_product_stmt = cc.cass_session.prepare("SELECT product_id, product_category, product_code, product_name, product_price, product_qoh FROM products WHERE product_id = ?")
+	cql_product_stmt = session.prepare("SELECT product_id, product_category, product_code, product_name, product_price, product_qoh FROM products WHERE product_id = ?")
 	cql_product_stmt.consistency_level = CASS_READ_CONSISTENCY
 
-	cql_order_insert = cc.cass_session.prepare("INSERT INTO sales_orders (order_date, order_date_hour, order_timestamp, order_code, order_discount_percent, order_estimated_shipping_date, order_grand_total, order_number_of_products, order_total, user_email_id, user_id, user_name, user_phone_number, user_platform, user_state_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	cql_order_insert = session.prepare("INSERT INTO sales_orders (order_date, order_date_hour, order_timestamp, order_code, order_discount_percent, order_estimated_shipping_date, order_grand_total, order_number_of_products, order_total, user_email_id, user_id, user_name, user_phone_number, user_platform, user_state_code) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	cql_order_insert.consistency_level = CASS_WRITE_CONSISTENCY
 
-	cql_order_products_insert = cc.cass_session.prepare("INSERT INTO sales_order_products (order_date, order_code, product_id, product_category, product_code, product_name, product_price_each, product_price_total, product_sold_quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	cql_order_products_insert = session.prepare("INSERT INTO sales_order_products (order_date, order_code, product_id, product_category, product_code, product_name, product_price_each, product_price_total, product_sold_quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	cql_order_products_insert.consistency_level = CASS_WRITE_CONSISTENCY
 
-	cql_product_qoh_insert = cc.cass_session.prepare("INSERT INTO products (product_id, product_qoh) VALUES (?, ?)")
+	cql_product_qoh_insert = session.prepare("INSERT INTO products (product_id, product_qoh) VALUES (?, ?)")
 	cql_product_qoh_insert.consistency_level = CASS_WRITE_CONSISTENCY
 
 
@@ -49,7 +50,7 @@ try:
 
 		### pick a user
 		cql_stmt              = cql_user_stmt.bind([random.randint(1, var_users_count)])
-		user_output           = cc.cass_session.execute(cql_stmt)
+		user_output           = session.execute(cql_stmt)
 		if (len(user_output._current_rows) > 0):
 			# cass_row              = user_output[0]  ### index based row fetching is deprecated in Python 4.x
 			cass_row              = user_output.one()
@@ -78,7 +79,7 @@ try:
 
 			### pick a product
 			cql_stmt                   = cql_product_stmt.bind([random.randint(1, var_products_count)])
-			product_output             = cc.cass_session.execute(cql_stmt)
+			product_output             = session.execute(cql_stmt)
 			if (len(product_output._current_rows) > 0):
 				# cass_row                   = product_output[0]
 				cass_row                   = product_output.one()
@@ -95,8 +96,8 @@ try:
 
 			### save order-products in db only if product quantity on hand is good
 			if ( var_product_qoh > (var_product_sold_quantity+50) ):
-				cc.cass_session.execute(cql_order_products_insert, (var_order_date, var_order_code, var_product_id, var_product_category, var_product_code, var_product_name, var_product_price, var_product_price_total, var_product_sold_quantity))
-				cc.cass_session.execute(cql_product_qoh_insert, (var_product_id, var_product_qoh - var_product_sold_quantity))
+				session.execute(cql_order_products_insert, (var_order_date, var_order_code, var_product_id, var_product_category, var_product_code, var_product_name, var_product_price, var_product_price_total, var_product_sold_quantity))
+				session.execute(cql_product_qoh_insert, (var_product_id, var_product_qoh - var_product_sold_quantity))
 				var_order_number_of_products = var_order_number_of_products + 1
 				var_order_total = var_order_total + var_product_price_total
 
@@ -106,7 +107,7 @@ try:
 
 		### save orders in db only if any products were sold
 		if ( var_order_number_of_products > 0 ):
-			cc.cass_session.execute(cql_order_insert, (var_order_date, var_order_date_hour, var_order_timestamp, var_order_code, var_order_discount_percent, var_order_estimated_shipping_date, var_order_grand_total, var_order_number_of_products, var_order_total, var_user_email_id, var_user_id, var_user_name, var_user_phone_number, var_user_platform, var_user_state_code))
+			session.execute(cql_order_insert, (var_order_date, var_order_date_hour, var_order_timestamp, var_order_code, var_order_discount_percent, var_order_estimated_shipping_date, var_order_grand_total, var_order_number_of_products, var_order_total, var_user_email_id, var_user_id, var_user_name, var_user_phone_number, var_user_platform, var_user_state_code))
 			v_number_of_orders = v_number_of_orders + 1
 
 		if (v_number_of_orders % 50 == 0):
@@ -129,4 +130,5 @@ else:
 
 
 ### close connection to cassandra cluster
-cc.disconnect_from_cassandra()
+#cc.disconnect_from_cassandra()
+# now happens in shutdown_driver() in dbConnection

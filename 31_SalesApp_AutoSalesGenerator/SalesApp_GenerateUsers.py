@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 ### import cassConnectionManager.py and other required libraries
-
-from cassConnectionManager import cassConnect
+#from cassConnectionManager import cassConnect
+#replacing with Stefano Lottini's dbConnection
+from dbConnection          import get_session
 from cassandra             import ConsistencyLevel
 from cassandra.query       import SimpleStatement
 from globalSettings        import *
@@ -28,27 +29,27 @@ input_var = TOTAL_USERS
 
 ### main logic
 try:
-	cc = cassConnect()
+	session = get_session()
 
 	### build the cql statements
-	cql_email_stmt    = cc.cass_session.prepare("SELECT email_server FROM lookup_email_servers WHERE id = ?")
-	cql_state_stmt    = cc.cass_session.prepare("SELECT state_code FROM lookup_usa_states WHERE id = ?")
-	cql_platform_stmt = cc.cass_session.prepare("SELECT platform FROM lookup_user_platforms WHERE id = ?")
+	cql_email_stmt    = session.prepare("SELECT email_server FROM lookup_email_servers WHERE id = ?")
+	cql_state_stmt    = session.prepare("SELECT state_code FROM lookup_usa_states WHERE id = ?")
+	cql_platform_stmt = session.prepare("SELECT platform FROM lookup_user_platforms WHERE id = ?")
 	cql_email_stmt.consistency_level    = CASS_READ_CONSISTENCY
 	cql_state_stmt.consistency_level    = CASS_READ_CONSISTENCY
 	cql_platform_stmt.consistency_level = CASS_READ_CONSISTENCY
 
-	cql_user_insert = cc.cass_session.prepare("INSERT INTO users (user_id, user_name, user_email_id, user_state_code, user_phone_number, user_platform) VALUES (?, ?, ?, ?, ?, ?)")
+	cql_user_insert = session.prepare("INSERT INTO users (user_id, user_name, user_email_id, user_state_code, user_phone_number, user_platform) VALUES (?, ?, ?, ?, ?, ?)")
 	cql_user_insert.consistency_level = CASS_WRITE_CONSISTENCY
 
 	### generate data using for loop
 	for var_user_id in range(1, input_var+1):
 		cql_stmt        = cql_email_stmt.bind([random.randint(1, 10)])
-		email_output    = cc.cass_session.execute(cql_stmt)
+		email_output    = session.execute(cql_stmt)
 		cql_stmt        = cql_state_stmt.bind([random.randint(1, 51)])
-		state_output    = cc.cass_session.execute(cql_stmt)
+		state_output    = session.execute(cql_stmt)
 		cql_stmt        = cql_platform_stmt.bind([random.randint(1, 10)])
-		platform_output = cc.cass_session.execute(cql_stmt)
+		platform_output = session.execute(cql_stmt)
 
 		if (len(email_output._current_rows) > 0):
 			# cass_row = email_output[0]  ### index based row fetching is deprecated in Python 4.x
@@ -76,7 +77,7 @@ try:
 		var_user_phone_number = str(random.randint(700, 900)) + '-' + str(random.randint(100, 900)) + '-' + str(random.randint(1001, 9999))
 
 		### save data in db
-		cc.cass_session.execute(cql_user_insert, (var_user_id, var_user_name, var_user_email_id, var_state_code, var_user_phone_number, var_platform))
+		session.execute(cql_user_insert, (var_user_id, var_user_name, var_user_email_id, var_state_code, var_user_phone_number, var_platform))
 
 		v_number_of_users = var_user_id
 
@@ -95,4 +96,5 @@ else:
 
 
 ### close connection to cassandra cluster
-cc.disconnect_from_cassandra()
+#cc.disconnect_from_cassandra()
+# now happens in shutdown_driver() in dbConnection

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 ### import cassConnectionManager.py and other required libraries
-
-from cassConnectionManager import cassConnect
+#from cassConnectionManager import cassConnect
+#replacing with Stefano Lottini's dbConnection
+from dbConnection          import get_session
 from cassandra             import ConsistencyLevel
 from cassandra.query       import SimpleStatement
 from globalSettings        import *
@@ -28,19 +29,19 @@ input_var = TOTAL_PRODUCTS
 
 ### main logic
 try:
-	cc = cassConnect()
+	session = get_session()
 
 	### build the cql statements
-	cql_prdcat_stmt = cc.cass_session.prepare("SELECT product_category FROM lookup_product_categories WHERE id = ?")
+	cql_prdcat_stmt = session.prepare("SELECT product_category FROM lookup_product_categories WHERE id = ?")
 	cql_prdcat_stmt.consistency_level = CASS_READ_CONSISTENCY
 
-	cql_product_insert = cc.cass_session.prepare("INSERT INTO products (product_id, product_code, product_name, product_description, product_category, product_price, product_qoh) VALUES (?, ?, ?, ?, ?, ?, ?)")
+	cql_product_insert = session.prepare("INSERT INTO products (product_id, product_code, product_name, product_description, product_category, product_price, product_qoh) VALUES (?, ?, ?, ?, ?, ?, ?)")
 	cql_product_insert.consistency_level = CASS_WRITE_CONSISTENCY
 
 	### generate data using for loop
 	for var_product_id in range(1, input_var+1):
 		cql_stmt        = cql_prdcat_stmt.bind([random.randint(1, 20)])
-		prdcat_output   = cc.cass_session.execute(cql_stmt)
+		prdcat_output   = session.execute(cql_stmt)
 
 		if (len(prdcat_output._current_rows) > 0):
 			# cass_row = prdcat_output[0]  ### index based row fetching is deprecated in Python 4.x
@@ -57,7 +58,7 @@ try:
 		var_product_qoh = random.randint(555, 5555)
 
 		### save data in db
-		cc.cass_session.execute(cql_product_insert, (var_product_id, var_product_code, var_product_name, var_product_description, var_product_category, var_product_price, var_product_qoh))
+		session.execute(cql_product_insert, (var_product_id, var_product_code, var_product_name, var_product_description, var_product_category, var_product_price, var_product_qoh))
 
 		v_number_of_products = var_product_id
 
@@ -77,4 +78,5 @@ else:
 
 
 ### close connection to cassandra cluster
-cc.disconnect_from_cassandra()
+#cc.disconnect_from_cassandra()
+# now happens in shutdown_driver() in dbConnection

@@ -350,6 +350,42 @@ Next, we will run the [SalesApp_GenerateProducts.py](31_SalesApp_AutoSalesGenera
 Done.
 ```
 
+#### ✅ 5c. Generate Order Data
+
+With the users and products generated, we can finally generate orders with the [SalesApp_GenerateOrders.py](31_SalesApp_AutoSalesGenerator/SalesApp_GenerateOrders.py) script:
+```
+% python SalesApp_GenerateOrders.py
+2023-01-09 10:57:29.644454 | 50 orders generated.
+93 total orders generated.
+Done.
+```
+
+#### ✅ 5d. Check Generated Data
+
+Now that everything has been generated, we can have a look at the tables with cqlsh.  We can use the Astra CLI to bring up a cqlsh session with our workshops database like this:
+
+```
+% astra db cqlsh workshops
+[INFO]  Secure connect bundles have been downloaded.
+[INFO]
+Cqlsh is starting, please wait for connection establishment...
+Connected to cndb at 127.0.0.1:9042.
+[cqlsh 6.8.0 | Cassandra 4.0.0.6816 | CQL spec 3.4.5 | Native protocol v4]
+Use HELP for help.
+token@cqlsh>
+```
+
+Let's `use` our sales keyspace and `describe` the tables within:
+
+```
+token@cqlsh> use sales;
+token@cqlsh:sales> desc tables;
+
+emp                        lookup_usa_states      sales_order_products
+lookup_email_servers       lookup_user_platforms  sales_orders
+lookup_product_categories  products               users
+```
+
 You can sample the generated data using cqlsh:
 ```
 token@cqlsh:sales> SELECT * FROm users LIMIT 10;
@@ -385,14 +421,95 @@ token@cqlsh:sales> SELECT * FROm products LIMIT 10;
        1041 |            Games | 2a2de6dc1b14 |      5b99 059346 bd1 e70163d |       5d09 e42d7 |         36.55 |        5523
 
 (10 rows)
+
+token@cqlsh:sales> SELECT * FROM sales_orders LIMIT 10;
+
+ order_date | order_date_hour | order_timestamp                 | order_code                           | order_actual_shipping_date | order_discount_percent | order_estimated_shipping_date   | order_grand_total | order_number_of_products | order_total | user_email_id             | user_id | user_name    | user_phone_number | user_platform | user_state_code
+------------+-----------------+---------------------------------+--------------------------------------+----------------------------+------------------------+---------------------------------+-------------------+--------------------------+-------------+---------------------------+---------+--------------+-------------------+---------------+-----------------
+ 2023-01-20 |              15 | 2023-01-20 15:25:05.302000+0000 | 97867e70-b0bb-433c-982a-1bf9002c2e27 |                       null |                      3 | 2023-01-31 00:00:00.000000+0000 |         1365.9443 |                        5 |     1408.19 | 09bacfa1c734@hushmail.com |     239 | 09bacfa1c734 |      895-534-5551 |          iPad |              NC
+ 2023-01-20 |              15 | 2023-01-20 15:25:06.429000+0000 | 08629a2f-1e8d-439f-b335-5c49e390bab8 |                       null |                      5 | 2023-01-28 00:00:00.000000+0000 |         1521.2825 |                        5 |     1601.35 |    2748de4b7d74@yahoo.com |     826 | 2748de4b7d74 |      838-375-6071 |    BlackBerry |              VA
+ 2023-01-20 |              15 | 2023-01-20 15:25:07.583000+0000 | e081ff06-457c-4602-859e-fe198c4e056f |                       null |                      1 | 2023-02-03 00:00:00.000000+0000 |         1925.7579 |                        5 |     1945.21 | f686215b1434@hushmail.com |     536 | f686215b1434 |      727-586-9388 |         Linux |              SD
+ 2023-01-20 |              15 | 2023-01-20 15:25:08.648000+0000 | 956c916a-d5a9-452f-b5df-eecf990c9486 |                       null |                      0 | 2023-01-23 00:00:00.000000+0000 |            958.21 |                        3 |      958.21 | 8051919c0594@hushmail.com |     766 | 8051919c0594 |      818-755-8518 |        iPhone |              NC
+ 2023-01-20 |              15 | 2023-01-20 15:25:09.365000+0000 | f929daed-8867-4cb2-938b-7629796923a1 |                       null |                      2 | 2023-02-01 00:00:00.000000+0000 |          395.8612 |                        3 |      403.94 | 56fdd656e5d4@fastmail.com |      75 | 56fdd656e5d4 |      879-217-1128 |        Mac OS |              MN
+ 2023-01-20 |              15 | 2023-01-20 15:25:10.029000+0000 | be405566-6ff7-404d-b081-cc651056abdf |                       null |                      3 | 2023-01-28 00:00:00.000000+0000 |          963.2973 |                        3 |      993.09 |    539933567d94@gmail.com |      53 | 539933567d94 |      838-529-3149 | Android Phone |              MA
+ 2023-01-20 |              15 | 2023-01-20 15:25:10.727000+0000 | 19058b67-2146-4e5a-aeec-52743146a63e |                       null |                      2 | 2023-02-09 00:00:00.000000+0000 |         1447.8226 |                        5 |     1477.37 |    2395e5b0dba4@lycos.com |     994 | 2395e5b0dba4 |      880-164-2794 | Android Phone |              AL
+ 2023-01-20 |              15 | 2023-01-20 15:25:11.767000+0000 | b9479b1c-719c-413e-aa5b-0d19716ba775 |                       null |                      0 | 2023-02-09 00:00:00.000000+0000 |            692.45 |                        4 |      692.45 |    35fd9eb1cd24@email.net |     355 | 35fd9eb1cd24 |      851-397-8540 |        iPhone |              OH
+ 2023-01-09 |              10 | 2023-01-09 10:56:44.471000+0000 | ea372b07-63d1-40ca-ad12-3757fbf25dee |                       null |                      5 | 2023-01-21 00:00:00.000000+0000 |           888.136 |                        4 |      934.88 |   332b20a042f4@icloud.com |     543 | 332b20a042f4 |      840-351-4919 |        iPhone |              MI
+ 2023-01-09 |              10 | 2023-01-09 10:56:45.838000+0000 | 3b3f5511-13c2-4518-9471-91eb070d4314 |                       null |                      0 | 2023-01-21 00:00:00.000000+0000 |           1647.27 |                        4 |     1647.27 |    302903178444@inbox.com |     528 | 302903178444 |      735-452-2509 |       Mozilla |              HI
+
+(10 rows)
+
+token@cqlsh:sales> SELECT * FROM sales_order_products LIMIT 10;
+
+ order_date | order_code                           | product_id | product_category | product_code | product_name  | product_price_each | product_price_total | product_sold_quantity
+------------+--------------------------------------+------------+------------------+--------------+---------------+--------------------+---------------------+-----------------------
+ 2023-01-09 | 8a711501-f8f6-4ec7-b070-d77a9318db4b |       1074 |        Fine Arts | 3babfc747854 | 5713c3 952888 |              57.35 |              172.05 |                     3
+ 2023-01-09 | 8a711501-f8f6-4ec7-b070-d77a9318db4b |       4905 |     Pet Supplies | c0376db4ce84 |   1059f3 4829 |               44.0 |               440.0 |                    10
+ 2023-01-09 | 30386b08-d503-49b9-a478-319a0cb4fa96 |       1043 |         Software | cb7fc23cbc14 |   2e69 4eb50b |              32.82 |              459.48 |                    14
+ 2023-01-09 | 30386b08-d503-49b9-a478-319a0cb4fa96 |       4258 |       Gift Cards | a1e6d671d654 |  b0553 b48bcf |               43.8 |               481.8 |                    11
+ 2023-01-09 | 2e81ab4b-045f-4e0c-a9d2-38ac7d549811 |        913 |      Travel Gear | 63ffd5cebd94 |    8f1fd 1f68 |              59.21 |              177.63 |                     3
+ 2023-01-09 | 2e81ab4b-045f-4e0c-a9d2-38ac7d549811 |       2154 |       Gift Cards | 42ba43214b84 |  bdf64 321b0a |              53.33 |              426.64 |                     8
+ 2023-01-09 | 2e81ab4b-045f-4e0c-a9d2-38ac7d549811 |       2321 |     Garden Tools | 6b1acebdf0f4 | 22fc5c9 ad313 |              35.11 |              386.21 |                    11
+ 2023-01-09 | 2e81ab4b-045f-4e0c-a9d2-38ac7d549811 |       2999 |        Fine Arts | 1bdb689915b4 |   7853aa ae94 |              40.79 |              407.90 |                    10
+ 2023-01-09 | 2e81ab4b-045f-4e0c-a9d2-38ac7d549811 |       3113 |     Garden Tools | 7a96575c96e4 |  62ebd2 eb9c3 |              50.91 |              407.28 |                     8
+ 2023-01-09 | 736194ba-ad66-405a-b51a-baa97321732e |        959 |      Light Bulbs | 6f58f7706204 |   44b8a2 1e21 |              44.74 |              134.22 |                     3
+ ```
+
+ #### ✅ 5e. Sales Data via FastAPI
+
+Before we go too much further, have a look at the `SalesAppApi.py` code.  In it, you can see how we prepared our CQL statements, defined our object models, and exposed our restful endpoints.
+
+Now let's stand-up our FastAPI `SalesAppApi` code with Uvicorn:
+
+```
+uvicorn salesAppApi:app
 ```
 
-#### ✅ 5c. Generate Order Data
+Now, let's pull back the top 5 users by hitting the `/users` endpoints with `curl`:
 
-With the users and products generated, we can finally generate orders with the [SalesApp_GenerateOrders.py](31_SalesApp_AutoSalesGenerator/SalesApp_GenerateOrders.py) script:
 ```
-% python SalesApp_GenerateOrders.py
-2023-01-09 10:57:29.644454 | 50 orders generated.
-93 total orders generated.
-Done.
+curl -s -XGET http://127.0.0.1:8000/users/5 \
+-H 'Content-Type: application/json'
+```
+
+In the output, look for a specific user's ID.  We can use that ID to pull back specific data for that `user_id`:
+
+```
+curl -s -XGET http://127.0.0.1:8000/user/990 \
+-H 'Content-Type: application/json'
+```
+
+Remember, as these are GET requests, you should be able to run these using a web browser, as well.  Now, let's do the same for products:
+
+```
+curl -s -XGET http://127.0.0.1:8000/products/5 \
+-H 'Content-Type: application/json'
+```
+
+As we did with users above, let's look for a specific `product_id` in our output, and pull back specific data for it:
+
+```
+curl -s -XGET http://127.0.0.1:8000/product/1535 \
+-H 'Content-Type: application/json'
+```
+
+Let's try this with our `orders` endpoint.  First, let's just bring back the first 5 orders:
+
+```
+curl -s -XGET http://127.0.0.1:8000/orders/5 \
+-H 'Content-Type: application/json'
+```
+
+To bring back orders for a specific day, we need to make note of an order's date and hour.  Now, let's use that on our `/orders/date/hour` endpoint:
+
+```
+curl -s -XGET http://127.0.0.1:8000/orders/date/2023-01-20/hour/15 \
+-H 'Content-Type: application/json'
+```
+
+If we wanted to see the specific products for one of those orders, we can take a specific `order_code` from one of the orders shown above.  Then we can use that with our original `order_date` and hit the `/orderproducts/date/code` endpoint:
+
+```
+curl -s -XGET http://127.0.0.1:8000/orderproducts/date/2023-01-20/code/b9479b1c-719c-413e-aa5b-0d19716ba775 \
+-H 'Content-Type: application/json'
 ```
