@@ -513,3 +513,12 @@ If we wanted to see the specific products for one of those orders, we can take a
 curl -s -XGET http://127.0.0.1:8000/orderproducts/date/2023-01-20/code/b9479b1c-719c-413e-aa5b-0d19716ba775 \
 -H 'Content-Type: application/json'
 ```
+## 6. What's NEXT ?
+
+We've just scratched the surface of what you can do using Python with Astra DB or Apache Cassandra.
+
+Go take a look at [DataStax for Developers](https://www.datastax.com/dev) and our DataStax [Developers channel on YouTube](https://www.youtube.com/@DataStaxDevs/featured) to see what else is possible.  There's plenty to dig into!
+
+Congratulations: You made it to the end of today's workshop!
+
+> Sincerely yours, The DataStax Developers
