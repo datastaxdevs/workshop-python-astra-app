@@ -1,4 +1,4 @@
-# workshop-python-astra-loader
+# Get Started on Python and NoSQL with Apache Cassandra
 
 ## 📋 Table of contents
 
