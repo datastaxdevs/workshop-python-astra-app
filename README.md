@@ -7,6 +7,7 @@
 3. [GitPod - Dev Environment Setup](#3-gitpod-setup)
 4. [Simple Demos](#4-simple-demos)
 5. [Sales Data Generator](#5-sales-data-generator)
+6. [What's NEXT ?](#6-whats-next)
 
 ## 1. Introduction
 
@@ -265,19 +266,6 @@ Once that script completes, we can verify that it created our new tables with th
 astra db cqlsh workshops -e "desc keyspace sales"
 ```
 
-Let's also have a look at the `globalSettings.py` file.
-
-```python
-### https://docs.datastax.com/en/developer/python-driver/3.25/api/cassandra/#cassandra.ConsistencyLevel
-CASS_READ_CONSISTENCY  = ConsistencyLevel.LOCAL_QUORUM
-CASS_WRITE_CONSISTENCY = ConsistencyLevel.LOCAL_QUORUM
-
-### for small system
-TOTAL_USERS    = 1000        # SalesApp_GenerateUsers.py    will generate this number of users
-TOTAL_PRODUCTS = 5000        # SalesApp_GenerateProducts.py will generate this number of products
-GEN_MAX_ORDERS = 120          # minimum 10. SalesApp_GenerateOrders.py will generate less than this number of orders randomly
-GEN_MAX_PRODUCTS_ORDER = 6   # minimum 5. SalesApp_GenerateOrders.py will generate less than this number of products per order randomly
-```
 #### ✅ 5a. Lookup Tables
 
 Next, let's load the lookup tables.  Feel free to look through the [03_load_data_in_lookup_tables.cql](31_SalesApp_AutoSalesGenerator/03_load_data_in_lookup_tables.cql) file:
@@ -316,6 +304,20 @@ token@cqlsh:sales> SELECT * FROM lookup_usa_states LIMIT 4;
 ```
 
 #### ✅ 5b. Generate User and Product Data
+
+Let's have a look at the `globalSettings.py` file.
+
+```python
+### https://docs.datastax.com/en/developer/python-driver/3.25/api/cassandra/#cassandra.ConsistencyLevel
+CASS_READ_CONSISTENCY  = ConsistencyLevel.LOCAL_QUORUM
+CASS_WRITE_CONSISTENCY = ConsistencyLevel.LOCAL_QUORUM
+
+### for small system
+TOTAL_USERS    = 1000        # SalesApp_GenerateUsers.py    will generate this number of users
+TOTAL_PRODUCTS = 5000        # SalesApp_GenerateProducts.py will generate this number of products
+GEN_MAX_ORDERS = 120          # minimum 10. SalesApp_GenerateOrders.py will generate less than this number of orders randomly
+GEN_MAX_PRODUCTS_ORDER = 6   # minimum 5. SalesApp_GenerateOrders.py will generate less than this number of products per order randomly
+```
 
 Next, let's generate data for users and products.  There are two Python scripts which will randomly generate users and products.  Feel free to take a look at them:
  - [SalesApp_GenerateUsers.py](31_SalesApp_AutoSalesGenerator/SalesApp_GenerateUsers.py)
@@ -457,7 +459,7 @@ token@cqlsh:sales> SELECT * FROM sales_order_products LIMIT 10;
 
  #### ✅ 5e. Sales Data via FastAPI
 
-Before we go too much further, have a look at the `SalesAppApi.py` code.  In it, you can see how we prepared our CQL statements, defined our object models, and exposed our restful endpoints.
+Before we go too much further, have a look at the [salesAppApi.py](31_SalesApp_AutoSalesGenerator/salesAppApi.py) code.  In it, you can see how we prepared our CQL statements, defined our object models, and exposed our restful endpoints.
 
 Now let's stand-up our FastAPI `SalesAppApi` code with Uvicorn:
 
