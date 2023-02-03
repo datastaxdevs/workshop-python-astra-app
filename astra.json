@@ -1,0 +1,21 @@
+{
+  "name": "Get Started on Python and NoSQL with Apache Cassandra",
+  "description": "Learn the basics of GraphQL. Plenty of hands-on experience covering: a React client interacting with Astra DB using the Netlify stack; usage of playgrounds and tooling; running your own Java GraphQL backend based on the Netflix DGS framework.",
+  "duration": "120 minutes",
+  "skillLevel": "Intermediate",
+  "language":["python"],
+  "stack": ["cassandra", "python", "fastapi"],
+  "githubUrl": "https://github.com/datastaxdevs/workshop-python-astra-app",
+  "youTubeUrl": ["https://www.youtube.com/watch?v=ENvr1ssphlg"],
+  "tags": [
+    { "name": "workshop" },
+    { "name": "nosql" },
+    { "name": "cassandra" },
+    { "name": "python" },
+    { "name": "gitpod" },
+    { "name": "astradb" },
+    { "name": "fastapi" }
+  ],
+  "category": "workshop",
+  "usecases": ["sales","employees"]
+}
