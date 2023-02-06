@@ -21,7 +21,7 @@ For this workshop you will need an Astra DB instance.  You will be able to creat
 
 _In case you haven't created your Astra DB cluster yet, go ahead and create it now (for free) by clicking here:_
 
-<a href="https://astra.dev/yt-8-10"><img src="images/create_astra_db_button.png?raw=true" /></a>
+<a href="https://astra.dev/yt-02-11"><img src="images/create_astra_db_button.png?raw=true" /></a>
 
  - Database Name: `workshops`
  - Keyspace Name: `sales`
