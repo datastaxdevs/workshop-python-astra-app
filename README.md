@@ -212,7 +212,7 @@ Now let's reproduce work similar to what we did with `readWriteCassEmp.py`.  Fir
 
 ```
 curl -s -XPOST localhost:8000/employee/create \
-     -d'{"empid":98,"first_name":"Wayne","last_name":"Gretzky"}' \
+     -d'{"empid":99,"first_name":"Wayne","last_name":"Gretzky"}' \
      -H 'Content-Type: application/json'
 ```
 

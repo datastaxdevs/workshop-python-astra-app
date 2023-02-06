@@ -62,7 +62,7 @@ try:
 
 		v_number_of_products = var_product_id
 
-		if (v_number_of_products % 1000 == 0):
+		if (v_number_of_products % 100 == 0):
 			output_message = str(v_number_of_products) + " products generated."
 			print(output_message)
 
