@@ -16,7 +16,7 @@ CASS_WRITE_CONSISTENCY = ConsistencyLevel.LOCAL_QUORUM
 
 
 ### for small system
-TOTAL_USERS    = 1000        # SalesApp_GenerateUsers.py    will generate this number of users
-TOTAL_PRODUCTS = 5000        # SalesApp_GenerateProducts.py will generate this number of products
+TOTAL_USERS    = 200        # SalesApp_GenerateUsers.py    will generate this number of users
+TOTAL_PRODUCTS = 1000        # SalesApp_GenerateProducts.py will generate this number of products
 GEN_MAX_ORDERS = 120          # minimum 10. SalesApp_GenerateOrders.py will generate less than this number of orders randomly
 GEN_MAX_PRODUCTS_ORDER = 6   # minimum 5. SalesApp_GenerateOrders.py will generate less than this number of products per order randomly

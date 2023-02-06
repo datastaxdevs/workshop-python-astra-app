@@ -81,7 +81,7 @@ try:
 
 		v_number_of_users = var_user_id
 
-		if (var_user_id % 100 == 0):
+		if (var_user_id % 10 == 0):
 			output_message = str(v_number_of_users) + " users generated."
 			print(output_message)
 
