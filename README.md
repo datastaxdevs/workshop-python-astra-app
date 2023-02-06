@@ -1,6 +1,6 @@
 # Get Started on Python and NoSQL with Apache Cassandra
 
-<img src="images/python_nosql_workshop?raw=true" />
+<img src="images/python_nosql_workshop.png?raw=true" />
 
 ## 📋 Table of contents
 
