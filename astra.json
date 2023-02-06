@@ -1,6 +1,5 @@
 {
-  "name": "Get Started on Python and NoSQL with Apache Cassandra",
-  "description": "Learn the basics of GraphQL. Plenty of hands-on experience covering: a React client interacting with Astra DB using the Netlify stack; usage of playgrounds and tooling; running your own Java GraphQL backend based on the Netflix DGS framework.",
+  "name": "Learn how to build out Python DALs, work with NoSQL DBs, and expose Python methods as restful endpoints.",
   "duration": "120 minutes",
   "skillLevel": "Intermediate",
   "language":["python"],
